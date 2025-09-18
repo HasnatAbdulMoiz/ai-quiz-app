@@ -22,15 +22,5 @@
       "src": "/(.*)",
       "dest": "/frontend/$1"
     }
-  ],
-  "env": {
-    "GEMINI_API_KEY": "@gemini_api_key",
-    "SUPER_ADMIN_EMAIL": "@super_admin_email",
-    "SUPER_ADMIN_PASSWORD": "@super_admin_password"
-  },
-  "functions": {
-    "api/index.py": {
-      "maxDuration": 30
-    }
-  }
+  ]
 }
