@@ -1,0 +1,47 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: quiz_system
+      POSTGRES_USER: quiz_user
+      POSTGRES_PASSWORD: quiz_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - quiz_network
+
+  # FastAPI Backend
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://quiz_user:quiz_password@postgres:5432/quiz_system
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+      - FROM_EMAIL=${FROM_EMAIL}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - TWILIO_PHONE_NUMBER=${TWILIO_PHONE_NUMBER}
+      - DEBUG=True
+      - CORS_ORIGINS=http://localhost:3000,http://localhost:3001
+    depends_on:
+      - postgres
+    networks:
+      - quiz_network
+
+volumes:
+  postgres_data:
+
+networks:
+  quiz_network:
+    driver: bridge
